@@ -6,6 +6,8 @@ public class AuthResponseDto
     // Token JWT firmado que el cliente enviará en la cabecera Authorization: Bearer
     public string Token { get; set; } = string.Empty;
 
+    public string RefreshToken { get; set; } = string.Empty;
+
     // Nombre del usuario autenticado para mostrar en la interfaz
     public string NombreUsuario { get; set; } = string.Empty;
 

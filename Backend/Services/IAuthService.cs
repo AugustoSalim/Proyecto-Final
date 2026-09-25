@@ -1,7 +1,7 @@
 using Backend.DTOs;
 
-namespace Backend.Services;
-
+namespace Backend.Services
+{
 // Contrato de la interfaz que expone los métodos de autenticación
 public interface IAuthService
 {
@@ -10,4 +10,8 @@ public interface IAuthService
 
     // Valida credenciales, comprueba BCrypt y emite el token
     Task<AuthResponseDto> LoginAsync(LoginDto dto);
+
+    Task<AuthResponseDto> RefreshTokenAsync(RefreshRequestDto dto);
+    Task<bool> RevokeTokenAsync(string refreshToken);
+}
 }

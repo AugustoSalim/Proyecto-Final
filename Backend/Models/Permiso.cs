@@ -7,6 +7,5 @@ namespace Backend.Models
         public string? Descripcion { get; set; }
 
         public ICollection<RolPermiso> RolPermisos { get; set; } = new List<RolPermiso>();
-        public ICollection<Usuario> Usuarios { get; set; } = new List<Usuario>();
     }
 }

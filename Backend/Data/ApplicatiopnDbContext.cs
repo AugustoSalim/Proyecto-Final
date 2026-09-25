@@ -37,23 +37,11 @@ public class ApplicationDbContext : DbContext
         // ==========================================
         modelBuilder.Entity<Permiso>(entity =>
         {
-            // Vincula la clase Permiso con la tabla física "permiso" en minúsculas
             entity.ToTable("permiso");
-
-            // Define "IdPermiso" como la Clave Primaria (Primary Key)
-            entity.HasKey(e => e.IdPermiso);
-
-            // Mapea la propiedad a la columna física "id_permiso"
-            entity.Property(e => e.IdPermiso).HasColumnName("id_permiso");
-
-            // Mapea la columna "nombre", exige que no sea nula y fija un límite de 100 caracteres
-            entity.Property(e => e.Nombre).HasColumnName("nombre").HasMaxLength(100).IsRequired();
-
-            // Mapea la columna "descripcion" permitiendo hasta 255 caracteres
-            entity.Property(e => e.Descripcion).HasColumnName("descripcion").HasMaxLength(255);
-
-            // Crea una restricción UNIQUE en la base de datos: no puede haber dos permisos con el mismo nombre
-            entity.HasIndex(e => e.Nombre).IsUnique();
+            entity.HasKey(p => p.IdPermiso);
+            entity.Property(p => p.IdPermiso).HasColumnName("id_permiso");
+            entity.Property(p => p.Nombre).HasColumnName("nombre");
+            entity.Property(p => p.Descripcion).HasColumnName("descripcion");
         });
 
         // ==========================================
@@ -85,29 +73,23 @@ public class ApplicationDbContext : DbContext
         // ==========================================
         modelBuilder.Entity<RolPermiso>(entity =>
         {
-            // Vincula con la tabla física de unión "rol_permiso"
             entity.ToTable("rol_permiso");
 
-            // Define una Clave Primaria Compuesta: la combinación de id_rol e id_permiso no se puede repetir
-            entity.HasKey(e => new { e.IdRol, e.IdPermiso });
+            // Clave primaria compuesta
+            entity.HasKey(rp => new { rp.IdRol, rp.IdPermiso });
 
-            // Mapea los nombres de las columnas foráneas
-            entity.Property(e => e.IdRol).HasColumnName("id_rol");
-            entity.Property(e => e.IdPermiso).HasColumnName("id_permiso");
+            entity.Property(rp => rp.IdRol).HasColumnName("id_rol");
+            entity.Property(rp => rp.IdPermiso).HasColumnName("id_permiso");
 
-            // Configura la relación con Rol: un Rol tiene muchos RolPermiso
-            // OnDelete(DeleteBehavior.Cascade): si se borra un rol, se borran automáticamente sus asignaciones aquí
-            entity.HasOne(e => e.Rol)
-                  .WithMany(r => r.RolPermisos)
-                  .HasForeignKey(e => e.IdRol)
-                  .OnDelete(DeleteBehavior.Cascade);
+            // Relación con Rol
+            entity.HasOne(rp => rp.Rol)
+                .WithMany(r => r.RolPermisos)
+                .HasForeignKey(rp => rp.IdRol);
 
-            // Configura la relación con Permiso: un Permiso tiene muchos RolPermiso
-            // OnDelete(DeleteBehavior.Cascade): si se borra un permiso, se borran automáticamente sus asignaciones aquí
-            entity.HasOne(e => e.Permiso)
-                  .WithMany(p => p.RolPermisos)
-                  .HasForeignKey(e => e.IdPermiso)
-                  .OnDelete(DeleteBehavior.Cascade);
+            // Relación con Permiso
+            entity.HasOne(rp => rp.Permiso)
+                .WithMany(p => p.RolPermisos)
+                .HasForeignKey(rp => rp.IdPermiso);
         });
 
         // ==========================================
